@@ -38,3 +38,10 @@ a simple vue component of croper,  Decoupling with Images, The maximum minimum a
     Number  
     default undefined  
     the max height of crop rect
+## events:
++ ### beforeChange
+    trigger when user is ready to drag the crop rect.
++ ### changed
+    trigger when drag end
++ ### created
+    trigger when croper component is mounted
