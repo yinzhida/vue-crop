@@ -636,13 +636,6 @@ export default {
             window.document.addEventListener('mousemove', this.doDrag);
         },
 
-        getValueAfterLimit (max, min, value) {
-            let result = value;
-            result = result > max ? max : result;
-            result = result < min ? min : result;
-            return result;
-        },
-
         getResult () {
             let maxX = this.$refs.drawPanel.offsetWidth;
             let maxY = this.$refs.drawPanel.offsetHeight;
@@ -656,7 +649,17 @@ export default {
                 x2: this.outX2 * 1000 / maxX,
                 y2: this.outY2 * 1000 / maxY,
                 w: this.width * 1000 / maxX,
-                h: this.height * 1000 / maxY
+                h: this.height * 1000 / maxY,
+                xpx: this.outX1,
+                ypx: this.outY1,
+                wpx: this.width,
+                hpx: this.height,
+                x1px: this.outX1,
+                y1px: this.outY1,
+                x2px: this.outX2,
+                y2px: this.outY2,
+                croperWidth: maxX,
+                croperHeight: maxY
             };
             return result;
         }
