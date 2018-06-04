@@ -18,7 +18,7 @@
     </div>
 </template>
 <script>
-import { getElementPageLeft, getElementPageTop } from '@/utils/DomUtils';
+import { getElementPageLeft, getElementPageTop } from './utils/DomUtils';
 export default {
     name: 'VueCrop',
 

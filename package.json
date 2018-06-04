@@ -1,0 +1,23 @@
+{
+  "name": "vue-crop",
+  "version": "1.0.0",
+  "description": "a simple vue component of croper, Decoupling with Images, The maximum minimum aspectRatio value can be set.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yinzhida/vue-crop.git"
+  },
+  "keywords": [
+    "crop",
+    "vue"
+  ],
+  "author": "yinzhida",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yinzhida/vue-crop/issues"
+  },
+  "homepage": "https://github.com/yinzhida/vue-crop#readme"
+}
