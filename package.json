@@ -1,6 +1,6 @@
 {
   "name": "vue-crop-simple",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a simple vue component of croper, Decoupling with Images, The maximum minimum aspectRatio value can be set.",
   "main": "index.js",
   "scripts": {

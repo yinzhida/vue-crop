@@ -7,6 +7,19 @@ npm install --save vue-crop-simple
     import VueCrop from 'vue-crop-simple';
     Vue.use(VueCrop);
 
+    <vue-crop
+        @changed="changeHandler"
+        @beforeChange="beforeChangeHandler"
+        :init-rect="{x1: 10, x2: 110, y1: 10, y2: 110}"
+        :allowStartNewCrop="false"
+        :min-height="100"
+        :min-width="100"
+        :max-width="500"
+        :max-height="500">
+    </vue-crop>
+
+## preview
+![preview](img/demo.png)
 ## props:
 + ### initRect
     Object  
