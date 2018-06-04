@@ -1,6 +1,12 @@
 # vue-crop
 a simple vue component of croper,  Decoupling with Images, The maximum minimum aspectRatio value can be set.
 
+## install & use
+npm install --save vue-crop-simple
+
+    import VueCrop from 'vue-crop-simple';
+    Vue.use(VueCrop);
+
 ## props:
 + ### initRect
     Object  
