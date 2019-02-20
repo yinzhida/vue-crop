@@ -18,7 +18,6 @@
     </div>
 </template>
 <script>
-import { getElementPageLeft, getElementPageTop } from './utils/DomUtils';
 export default {
     name: 'VueCrop',
 
@@ -202,6 +201,18 @@ export default {
             return { x: rightBottomCornerX, y: rightBottomCornerY };
         },
 
+        leftBottomCorner () {
+            let leftBottomCornerX = this.x1 > this.x2 ? this.x2 : this.x1;
+            let leftBottomCornerY = this.y1 > this.y2 ? this.y1 : this.y2;
+            return { x: leftBottomCornerX, y: leftBottomCornerY };
+        },
+
+        rightTopCorner () {
+            let rightTopCornerX = this.x1 > this.x2 ? this.x1 : this.x2;
+            let rightTopCornerY = this.y1 > this.y2 ? this.y2 : this.y1;
+            return { x: rightTopCornerX, y: rightTopCornerY };
+        },
+
         cursorMode () {
             if ((this.x2 - this.x1) * (this.y2 - this.y1) > 0) {
                 return 'mode1';
@@ -360,266 +371,185 @@ export default {
         rightXName () {
             return this.x1 > this.x2 ? 'x1' : 'x2';
         },
+
         bottomYName () {
             return this.y1 > this.y2 ? 'y1' : 'y2';
         },
-        leftXName () {
-            return this.y1 > this.y2 ? 'x2' : 'x1';
-        },
-        topYName () {
-            return this.y1 > this.y2 ? 'y2' : 'y1';
-        },
+
         innerMinHeight () {
-            if (this.aspectRatio) {
-                if (this.minWidth === undefined) {
-                    return this.minHeight;
-                }
-                let aspectMinHeight = this.minWidth / this.aspectRatio;
-                if (this.minHeight) {
-                    return Math.max(this.minHeight, aspectMinHeight);
-                } else {
-                    return aspectMinHeight;
-                }
-            } else {
-                return this.minHeight;
+            if (this.minHeight) {
+                return Math.max(this.minHeight, 0);
             }
+            return 0;
         },
+
         innerMaxHeight () {
-            if (this.aspectRatio) {
-                if (this.maxWidth === undefined) {
-                    return this.maxHeight;
-                }
-                let aspectMaxHeight = this.maxWidth / this.aspectRatio;
-                if (this.maxHeight) {
-                    return Math.min(this.maxHeight, aspectMaxHeight);
-                } else {
-                    return aspectMaxHeight;
-                }
-            } else {
-                return this.maxHeight;
+            if (this.maxHeight) {
+                return Math.min(this.maxHeight, this.$refs.drawPanel.offsetHeight);
             }
+            return this.$refs.drawPanel.offsetHeight;
         },
+
         innerMinWidth () {
-            if (this.aspectRatio) {
-                if (this.minHeight === undefined) {
-                    return this.minWidth;
-                }
-                let aspectMinWidth = this.minHeight * this.aspectRatio;
-                if (this.minWidth) {
-                    return Math.max(this.minWidth, aspectMinWidth);
-                } else {
-                    return aspectMinWidth;
-                }
+            if (this.minWidth) {
+                return Math.max(this.minWidth, 0);
             } else {
-                return this.minWidth;
+                return 0;
             }
         },
+
         innerMaxWidth () {
-            if (this.aspectRatio) {
-                if (this.maxHeight === undefined) {
-                    return this.maxWidth;
-                }
-                let aspectMaxWidth = this.maxHeight * this.aspectRatio;
-                if (this.maxWidth) {
-                    return Math.min(this.maxWidth, aspectMaxWidth);
-                } else {
-                    return aspectMaxWidth;
-                }
-            } else {
-                return this.maxWidth;
+            if (this.maxWidth) {
+                return Math.min(this.maxWidth, this.$refs.drawPanel.offsetWidth);
             }
+            return this.$refs.drawPanel.offsetWidth;
         }
     },
 
     methods: {
         readyForDrag (coordinates) {
-            this.modifyCoordinates = coordinates;
+            let newCoordinate = this.reSort(coordinates);
+            this.modifyCoordinates = newCoordinate;
             window.document.addEventListener('mousemove', this.doDrag);
             this.$emit('beforeChange', this.getResult());
         },
 
         doDrag (e) {
-            let realChanges = this.getRealChanges({ movementX: e.movementX, movementY: e.movementY });
-
-            for (let change of realChanges) {
-                this[change['coordinate']] = this[change['coordinate']] + change['movement'];
-            }
+            let targetCoordinates = this.getTargetCoordinates({ movementX: e.movementX, movementY: e.movementY });
+            this.x1 = targetCoordinates.x1;
+            this.x2 = targetCoordinates.x2;
+            this.y1 = targetCoordinates.y1;
+            this.y2 = targetCoordinates.y2;
         },
 
-        getRealChanges (movement) {
+        getTargetCoordinates (movement) {
             let modifyCoordinates = this.modifyCoordinates;
-            let len = modifyCoordinates.length;
-            let moveInfo;
-            let changes;
-            switch (len) {
-                case 1:
-                    moveInfo = this.getSingleMoveInfo(modifyCoordinates[0], movement);
-                    changes = this.getChangesFromMoveInfo(moveInfo);
-                    return changes;
-                case 2:
-                    moveInfo = this.getDoubleMoveInfo(modifyCoordinates, movement);
-                    changes = this.getChangesFromMoveInfo(moveInfo);
-                    return changes;
-                case 4:
-                    changes = this.getFourChanges(modifyCoordinates, movement);
-                    return changes;
-            }
-        },
-
-        getFourChanges (modifyCoordinates, movement) {
-            let rectWidth = this.width;
-            let rectHeight = this.height;
-            let changes = [];
-            for (let coordinate of modifyCoordinates) {
-                let minX = 0;
-                let minY = 0;
-                let maxX = this.$refs.drawPanel.offsetWidth;
-                let maxY = this.$refs.drawPanel.offsetHeight;
-                let direction = coordinate.split('')[0];
-                if (direction === 'x') {
-                    if (coordinate === this.rightXName) {
-                        minX = rectWidth;
-                    } else {
-                        maxX = maxX - rectWidth;
-                    }
-                    changes.push({
-                        coordinate: coordinate,
-                        movement: this.normalMovement(coordinate, movement.movementX, minX, maxX)
-                    });
-                } else {
-                    if (coordinate === this.bottomYName) {
-                        minY = rectHeight;
-                    } else {
-                        maxY = maxY - rectHeight;
-                    }
-                    changes.push({
-                        coordinate: coordinate,
-                        movement: this.normalMovement(coordinate, movement.movementY, minY, maxY)
-                    });
-                }
-            }
-            return changes;
-        },
-
-        getSingleMoveInfo (modifyCoordinate, movement, xDirection, yDirection) {
-            let minX = 0;
-            let minY = 0;
-            let maxX = this.$refs.drawPanel.offsetWidth;
-            let maxY = this.$refs.drawPanel.offsetHeight;
-            let coordinateDirection = modifyCoordinate;
-            let directionToward = coordinateDirection.split('')[0];
-            let coordinateDirectionMovement;
-            let relatedDirection;
-            let relatedDirectionMovement;
-
-            coordinateDirectionMovement = movement['movement' + directionToward.toUpperCase()];
-            let minCoordinate = directionToward === 'x' ? minX : minY;
-            let maxCoordinate = directionToward === 'x' ? maxX : maxY;
-            let minRelated = directionToward === 'x' ? minY : minX;
-            let maxRelated = directionToward === 'x' ? maxY : maxX;
-            coordinateDirectionMovement = this.normalMovement(coordinateDirection, coordinateDirectionMovement, minCoordinate, maxCoordinate);
-            let validateArray = ['MinWidth', 'MinHeight', 'MaxWidth', 'MaxHeight'];
-            for (let validate of validateArray) {
-                if (this['inner' + validate]) {
-                    coordinateDirectionMovement = this.getValidateMovement(directionToward, coordinateDirection, coordinateDirectionMovement, validate);
-                }
-            }
-
-            if (!this.aspectRatio) {
-                return { coordinateDirection, coordinateDirectionMovement };
-            }
-            relatedDirection = directionToward === 'x' ? (yDirection || this.bottomYName) : (xDirection || this.rightXName);
-            let flag = 1;
-            if (([this.rightXName, this.topYName].includes(coordinateDirection) && [this.rightXName, this.topYName].includes(relatedDirection)) ||
-                ([this.leftXName, this.bottomYName].includes(coordinateDirection) && [this.leftXName, this.bottomYName].includes(relatedDirection))) {
-                flag = -1;
-            }
-            relatedDirectionMovement = directionToward === 'x' ? coordinateDirectionMovement / this.aspectRatio : coordinateDirectionMovement * this.aspectRatio;
-            relatedDirectionMovement *= flag;
-
-            relatedDirectionMovement = this.normalMovement(relatedDirection, relatedDirectionMovement, minRelated, maxRelated);
-
-            coordinateDirectionMovement = directionToward === 'x' ? relatedDirectionMovement * this.aspectRatio : relatedDirectionMovement / this.aspectRatio;
-            coordinateDirectionMovement *= flag;
-            return { coordinateDirection, coordinateDirectionMovement, relatedDirection, relatedDirectionMovement };
-        },
-
-        getValidateMovement (directionToward, coordinateDirection, coordinateDirectionMovement, validate) {
-            let validateToward = validate.substring(3) === 'Width' ? 'x' : 'y';
-            let validateMinMax = validate.substring(0, 3);
-            if (directionToward !== validateToward) {
-                return coordinateDirectionMovement;
-            }
-            function CompareValidate (afterMoveValue, validateValue, validateMinMax) {
-                if (validateMinMax === 'Min') {
-                    return afterMoveValue < validateValue;
-                } else {
-                    return afterMoveValue > validateValue;
-                }
-            }
-            let endName = validateToward === 'x' ? this.rightXName : this.bottomYName;
-            let directionFlag = coordinateDirection === endName ? 1 : -1;
-            let brotherDirection = this.getCoordinateBrotherName(coordinateDirection);
-            let afterMoveValue = (this[coordinateDirection] + coordinateDirectionMovement - this[brotherDirection]) * directionFlag;
-            if (CompareValidate(afterMoveValue, this['inner' + validate], validateMinMax)) {
-                coordinateDirectionMovement = this['inner' + validate] / directionFlag + this[brotherDirection] - this[coordinateDirection];
-            }
-            return coordinateDirectionMovement;
-        },
-
-        getCoordinateBrotherName (coordinate) {
-            let direction = coordinate.split('')[0];
-            let order = coordinate.split('')[1];
-            let brotherOrder = order === '1' ? '2' : '1';
-            let coordinateBrotherName = direction + brotherOrder;
-            return coordinateBrotherName;
-        },
-
-        getDoubleMoveInfo (modifyCoordinates, movement) {
-            let modifyCoordinates0 = modifyCoordinates[0];
-            let modifyCoordinates1 = modifyCoordinates[1];
-            let xDirection = modifyCoordinates0.split('')[0] === 'x' ? modifyCoordinates0 : modifyCoordinates1;
-            let yDirection = modifyCoordinates0.split('')[0] === 'y' ? modifyCoordinates0 : modifyCoordinates1;
-            let moveInfo0 = this.getSingleMoveInfo(modifyCoordinates0, movement, xDirection, yDirection);
-            let moveInfo1 = this.getSingleMoveInfo(modifyCoordinates1, movement, xDirection, yDirection);
-            if (!this.aspectRatio) {
-                let result = {
-                    coordinateDirection: moveInfo0.coordinateDirection,
-                    coordinateDirectionMovement: moveInfo0.coordinateDirectionMovement,
-                    relatedDirection: moveInfo1.coordinateDirection,
-                    relatedDirectionMovement: moveInfo1.coordinateDirectionMovement
-                };
-                return result;
-            }
-            if (Math.abs(moveInfo0.coordinateDirectionMovement) >= Math.abs(moveInfo1.relatedDirectionMovement)) {
-                return moveInfo0;
+            let testChanges = [];
+            let targetCoordinates = {};
+            let targetWidth, targetHeight;
+            let mainDirection;
+            if (modifyCoordinates.length === 1) {
+                mainDirection = modifyCoordinates[0];
             } else {
-                return moveInfo1;
+                mainDirection = Math.abs(movement.movementX) < Math.abs(movement.movementY) ? 'y2' : 'x2';
+            }
+            this.modifyAspectRation(mainDirection, movement);
+
+            let setTargetInfo = () => {
+                targetCoordinates.x1 = this.x1 + (modifyCoordinates.length === 4 ? movement.movementX : 0);
+                targetCoordinates.x2 = this.x2 + movement.movementX;
+                targetCoordinates.y1 = this.y1 + (modifyCoordinates.length === 4 ? movement.movementY : 0);
+                targetCoordinates.y2 = this.y2 + movement.movementY;
+                targetWidth = Math.abs(targetCoordinates.x2 - targetCoordinates.x1);
+                targetHeight = Math.abs(targetCoordinates.y2 - targetCoordinates.y1);
+            };
+
+            setTargetInfo();
+
+            let modifyMovementByDiff = (movement, moveDirction, diff) => {
+                let movementDirection = 'movement' + moveDirction.toUpperCase();
+                movement[movementDirection] = movement[movementDirection] > 0 ? (movement[movementDirection] - diff) : (movement[movementDirection] + diff);
+                this.modifyAspectRation(moveDirction + '2', movement);
+                setTargetInfo();
+            };
+
+            let validateMax = (target, max, direction) => {
+                if (target > max) {
+                    let diff = target - max;
+                    modifyMovementByDiff(movement, direction, diff);
+                }
+            };
+
+            let validateMin = (target, min, direction) => {
+                if (target < min) {
+                    let diff = min - target;
+                    modifyMovementByDiff(movement, direction, diff);
+                }
+            };
+
+            validateMax(targetWidth, this.innerMaxWidth, 'x');
+            validateMin(targetWidth, this.innerMinWidth, 'x');
+            validateMax(targetHeight, this.innerMaxHeight, 'y');
+            validateMin(targetHeight, this.innerMinHeight, 'y');
+
+            let maxX = this.$refs.drawPanel.offsetWidth;
+            let minX = 0;
+            let maxY = this.$refs.drawPanel.offsetHeight;
+            let minY = 0;
+
+            validateMax(targetCoordinates.x2, maxX, 'x');
+            validateMin(targetCoordinates.x2, minX, 'x');
+            validateMax(targetCoordinates.y2, maxY, 'y');
+            validateMin(targetCoordinates.y2, minY, 'y');
+            if (modifyCoordinates.length === 4) {
+                validateMax(targetCoordinates.x1, maxX, 'x');
+                validateMin(targetCoordinates.x1, minX, 'x');
+                validateMax(targetCoordinates.y1, maxY, 'y');
+                validateMin(targetCoordinates.y1, minY, 'y');
+            }
+
+            return targetCoordinates;
+        },
+
+        modifyAspectRation (mainDirection, movement) {
+            if (this.modifyCoordinates.length !== 4) {
+                let subDirection = mainDirection === 'x2' ? 'y2' : 'x2';
+                let mainMovementName = 'movement' + mainDirection[0].toUpperCase();
+                let subMovementName = 'movement' + subDirection[0].toUpperCase();
+                let mark = 1;
+                if (
+                    (this.x2 === this.rightTopCorner.x && this.y2 === this.rightTopCorner.y)
+                    || (this.x2 === this.leftBottomCorner.x && this.y2 === this.leftBottomCorner.y)
+                ) {
+                    mark = -1;
+                }
+                if (this.aspectRatio) {
+                    if (mainDirection[0] === 'x') {
+                        movement[subMovementName] = movement[mainMovementName] / this.aspectRatio * mark;
+                    } else {
+                        movement[subMovementName] = movement[mainMovementName] * this.aspectRatio * mark;
+                    }
+                }
             }
         },
 
-        getChangesFromMoveInfo (moveInfo) {
-            let changes = [{
-                coordinate: moveInfo.coordinateDirection,
-                movement: moveInfo.coordinateDirectionMovement
-            }];
-            if (moveInfo.relatedDirection) {
-                changes.push({
-                    coordinate: moveInfo.relatedDirection,
-                    movement: moveInfo.relatedDirectionMovement
-                });
+        reSort (coordinates) {
+            let originCoordinate = {
+                x1: this.x1,
+                x2: this.x2,
+                y1: this.y1,
+                y2: this.y2
             }
-            return changes;
+            let direction, endPointPartner;
+            let newCoordinate = [];
+            if (coordinates.length === 1) {
+                direction = coordinates[0][0];
+                endPointPartner = direction === 'x' ? this.bottomYName : this.rightXName;
+                newCoordinate = [direction + '2'];
+            }
+
+            if (coordinates.length === 2) {
+                direction = coordinates[0][0];
+                endPointPartner = coordinates[1];
+                newCoordinate = [coordinates[0][0] + '2', coordinates[1][0] + '2'];
+            }
+
+            if (coordinates.length === 4) {
+                newCoordinate = coordinates;
+            }
+
+            if (coordinates.length !== 4) {
+                this[direction + '2'] = originCoordinate[coordinates[0]];
+                this[endPointPartner[0] + '2'] = originCoordinate[endPointPartner];
+                this[direction + '1'] = originCoordinate[this.getAgainstCoordinateName(coordinates[0])];
+                this[endPointPartner[0] + '1'] = originCoordinate[this.getAgainstCoordinateName(endPointPartner)];
+            }
+
+            return newCoordinate;
         },
 
-        normalMovement (direction, movement, min, max) {
-            if (this[direction] + movement > max) {
-                movement = max - this[direction];
-            }
-            if (this[direction] + movement < min) {
-                movement = min - this[direction];
-            }
-            return movement;
+        getAgainstCoordinateName (coordinateName) {
+            return coordinateName[1] === '1' ? (coordinateName[0] + '2') : (coordinateName[0] + '1');
         },
 
         startDrawNewCrop (e) {
@@ -686,22 +616,22 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .draw-panel {
-  width: 100%;
-  height: 100%;
-  border: none;
-  margin: 0;
-  padding: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    margin: 0;
+    padding: 0;
 }
 .crop-container {
-  width: 100%;
-  height: 100%;
-  border: none;
-  margin: 0;
-  padding: 0;
-  position: relative;
+    width: 100%;
+    height: 100%;
+    border: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
 }
 .cursor-crosshair {
-  cursor: crosshair;
+    cursor: crosshair;
 }
 
 .rect {
@@ -726,21 +656,21 @@ export default {
 }
 
 .unselect {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -ms-user-select: none;
-  /* 以下两个属性目前并未支持，写在这里为了减少风险 */
-  -o-user-select: none;
-  user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -ms-user-select: none;
+    /* 以下两个属性目前并未支持，写在这里为了减少风险 */
+    -o-user-select: none;
+    user-select: none;
 }
 
 .bg-rect {
-  position: absolute;
-  background-color: black;
-  opacity: 0.3;
-  margin: 0;
-  padding: 0;
-  border: 0;
+    position: absolute;
+    background-color: black;
+    opacity: 0.3;
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
 </style>
