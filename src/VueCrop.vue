@@ -436,10 +436,10 @@ export default {
             this.modifyAspectRation(mainDirection, movement);
 
             let setTargetInfo = () => {
-                targetCoordinates.x1 = this.x1 + (modifyCoordinates.length === 4 ? movement.movementX : 0);
-                targetCoordinates.x2 = this.x2 + movement.movementX;
-                targetCoordinates.y1 = this.y1 + (modifyCoordinates.length === 4 ? movement.movementY : 0);
-                targetCoordinates.y2 = this.y2 + movement.movementY;
+                targetCoordinates = { x1: this.x1, x2: this.x2, y1: this.y1, y2: this.y2 };
+                for (let coordinate of modifyCoordinates) {
+                    targetCoordinates[coordinate] = this[coordinate] + movement['movement' + coordinate[0].toUpperCase()]
+                }
                 targetWidth = Math.abs(targetCoordinates.x2 - targetCoordinates.x1);
                 targetHeight = Math.abs(targetCoordinates.y2 - targetCoordinates.y1);
             };
@@ -481,6 +481,7 @@ export default {
             validateMin(targetCoordinates.x2, minX, 'x');
             validateMax(targetCoordinates.y2, maxY, 'y');
             validateMin(targetCoordinates.y2, minY, 'y');
+
             if (modifyCoordinates.length === 4) {
                 validateMax(targetCoordinates.x1, maxX, 'x');
                 validateMin(targetCoordinates.x1, minX, 'x');
@@ -606,10 +607,7 @@ export default {
         window.document.addEventListener('mouseup', leaveOrUp);
         window.document.addEventListener('mouseleave', leaveOrUp);
         this.$emit('created', this.getResult());
-    },
-
-    components: {}
-
+    }
 };
 
 </script>
