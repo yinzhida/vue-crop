@@ -1,7 +1,7 @@
-import VueCrop from './src/VueCrop.vue';
+import VueCrop from './VueCrop.vue';
 
 const vueCropper = {
-    install (Vue, options) {
+    install (Vue) {
         Vue.component('vue-crop', VueCrop);
     }
 };

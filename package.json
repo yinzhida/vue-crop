@@ -2,14 +2,7 @@
   "name": "vue-crop-simple",
   "version": "2.0.1",
   "description": "a simple vue component of croper, Decoupling with Images, The maximum minimum aspectRatio value can be set.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/yinzhida/vue-crop.git"
-  },
+  "main": "dist/vue-crop.min.js",
   "keywords": [
     "crop",
     "vue"
@@ -19,5 +12,49 @@
   "bugs": {
     "url": "https://github.com/yinzhida/vue-crop/issues"
   },
-  "homepage": "https://github.com/yinzhida/vue-crop#readme"
+  "homepage": "https://github.com/yinzhida/vue-crop#readme",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build --target wc --name vue-crop ./src/VueCrop.vue",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "vue": "2.x"
+  },
+  "devDependencies": {
+    "vue": "^2.6.6",
+    "@vue/cli-plugin-babel": "^3.4.0",
+    "@vue/cli-plugin-eslint": "^3.4.0",
+    "@vue/cli-service": "^3.4.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "vue-template-compiler": "^2.5.21"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }

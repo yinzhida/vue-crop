@@ -424,7 +424,6 @@ export default {
 
         getTargetCoordinates (movement) {
             let modifyCoordinates = this.modifyCoordinates;
-            let testChanges = [];
             let targetCoordinates = {};
             let targetWidth, targetHeight;
             let mainDirection;
@@ -557,8 +556,8 @@ export default {
             if (!this.allowStartNewCrop) {
                 return;
             }
-            let pointX = e.offsetX + getElementPageLeft(e.target) - getElementPageLeft(this.$refs.drawPanel);
-            let pointY = e.offsetY + getElementPageTop(e.target) - getElementPageTop(this.$refs.drawPanel);
+            let pointX = e.offsetX;
+            let pointY = e.offsetY;
             this.x1 = pointX;
             this.y1 = pointY;
             this.x2 = pointX;
@@ -597,7 +596,7 @@ export default {
     },
 
     mounted () {
-        const leaveOrUp = (e) => {
+        const leaveOrUp = () => {
             if (this.modifyCoordinates.length > 0) {
                 this.$emit('changed', this.getResult());
             }
