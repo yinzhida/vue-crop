@@ -556,8 +556,11 @@ export default {
             if (!this.allowStartNewCrop) {
                 return;
             }
-            let pointX = e.offsetX;
-            let pointY = e.offsetY;
+
+            let rect = this.$refs.drawPanel.getBoundingClientRect();
+            let targetRect = e.target.getBoundingClientRect();
+            let pointX = e.offsetX - rect.left + targetRect.left;
+            let pointY = e.offsetY - rect.top + targetRect.top;
             this.x1 = pointX;
             this.y1 = pointY;
             this.x2 = pointX;
