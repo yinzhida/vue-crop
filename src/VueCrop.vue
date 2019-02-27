@@ -429,6 +429,10 @@ export default {
             let mainDirection;
             if (modifyCoordinates.length === 1) {
                 mainDirection = modifyCoordinates[0];
+                if (this.aspectRatio) {
+                    let subDirection = mainDirection === 'x2' ? 'y2' : 'x2';
+                    modifyCoordinates.push(subDirection);
+                }
             } else {
                 mainDirection = Math.abs(movement.movementX) < Math.abs(movement.movementY) ? 'y2' : 'x2';
             }
