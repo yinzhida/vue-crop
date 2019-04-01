@@ -1,6 +1,9 @@
 # vue-crop
 a simple vue component of croper,  Decoupling with Images, The maximum minimum aspectRatio value can be set.
 
+## LICENSE
+[![LICENSE](https://img.shields.io/badge/license-NPL%20(The%20996%20Prohibited%20License)-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
+
 ## install & use
 npm install --save vue-crop-simple
 

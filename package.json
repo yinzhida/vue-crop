@@ -1,6 +1,6 @@
 {
   "name": "vue-crop-simple",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "a simple vue component of croper, Decoupling with Images, The maximum minimum aspectRatio value can be set.",
   "main": "dist/vue-crop.umd.min.js",
   "keywords": [
@@ -8,7 +8,7 @@
     "vue"
   ],
   "author": "yinzhida",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "bugs": {
     "url": "https://github.com/yinzhida/vue-crop/issues"
   },
