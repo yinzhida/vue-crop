@@ -1,12 +1,3 @@
-/*
- * Created Date: 2019-04-09 10:16:42
- * Author: yinzhida Email: yinzhida@qiyi.com
- * -----
- * Last Modified: 2019-04-09 10:42:02
- * Modified By: yinzhida yinzhida@qiyi.com
- * -----
- * Copyright (c) 2019 IQIYI
- */
 # vue-crop
 a simple vue component of croper,  Decoupling with Images, The maximum minimum aspectRatio value can be set.
 
