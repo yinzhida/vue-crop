@@ -8,7 +8,7 @@ a simple vue component of croper,  Decoupling with Images, The maximum minimum a
 npm install --save vue-crop-simple
 
     import VueCrop from 'vue-crop-simple';
-    import 'vue-crop-simple/dist/vue-crop.css';
+    import 'vue-crop-simple/dist/vue-crop-simple.css';
     Vue.use(VueCrop);
 
     <vue-crop
@@ -25,7 +25,7 @@ npm install --save vue-crop-simple
 use in plugin
 
     import VueCrop from 'vue-crop-simple';
-    import 'vue-crop-simple/dist/vue-crop.css';
+    import 'vue-crop-simple/dist/vue-crop-simple.css';
 
     // in vue component file
     components: {
