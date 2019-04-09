@@ -1,0 +1,60 @@
+.draw-panel {
+  width: 100%;
+  height: 100%;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.crop-container {
+  width: 100%;
+  height: 100%;
+  border: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.cursor-crosshair {
+  cursor: crosshair;
+}
+
+.rect {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: 1px solid #39f;
+  outline-color: rgba(51, 153, 255, 0.75);
+  position: absolute;
+}
+
+.anchor {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  margin-left: -4px;
+  background-color: #39f;
+  border-radius: 50%;
+  opacity: 0.75;
+  border: none;
+}
+
+.unselect {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -ms-user-select: none;
+  /* 以下两个属性目前并未支持，写在这里为了减少风险 */
+  -o-user-select: none;
+  user-select: none;
+}
+
+.bg-rect {
+  position: absolute;
+  background-color: black;
+  opacity: 0.3;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}

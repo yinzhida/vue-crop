@@ -1,8 +1,8 @@
 {
   "name": "vue-crop-simple",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "a simple vue component of croper, Decoupling with Images, The maximum minimum aspectRatio value can be set.",
-  "main": "dist/vue-crop.umd.min.js",
+  "main": "dist/vue-crop.js",
   "keywords": [
     "crop",
     "vue"
@@ -14,47 +14,49 @@
   },
   "homepage": "https://github.com/yinzhida/vue-crop#readme",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib  --name vue-crop index.js",
-    "pb": "vue-cli-service build --target lib  --name vue-crop index.js && npm publish",
-    "lint": "vue-cli-service lint"
+    "build": "node build/build.js",
+    "watch": "webpack --watch --config build/webpack.script.conf.js ",
+    "pb": "npm run build && npm publish",
+    "lint": "eslint --ext .js,.vue src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "chalk": "^2.4.1",
+    "css-loader": "^0.28.11",
+    "eslint": "^5.10.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-plugin-html": "^5.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.11",
+    "ora": "^2.1.0",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-import": "^11.0.0",
+    "postcss-loader": "^2.0.8",
+    "postcss-url": "^7.2.1",
+    "rimraf": "^2.6.2",
+    "style-loader": "^0.23.1",
+    "url-loader": "^0.6.2",
+    "vue": "^2.5.16",
+    "vue-eslint-parser": "^4.0.3",
+    "vue-loader": "^13.7.3",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^3.10.0",
+    "webpack-bundle-analyzer": "^2.9.1",
+    "webpack-merge": "^4.1.1",
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {},
   "peerDependencies": {
     "vue": "2.x"
-  },
-  "devDependencies": {
-    "vue": "^2.6.6",
-    "@vue/cli-plugin-babel": "^3.4.0",
-    "@vue/cli-plugin-eslint": "^3.4.0",
-    "@vue/cli-service": "^3.4.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "vue-template-compiler": "^2.5.21"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  }
 }

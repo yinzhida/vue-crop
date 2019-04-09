@@ -1,0 +1,57 @@
+
+.draw-panel[data-v-60b53eb4] {
+  width: 100%;
+  height: 100%;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+.crop-container[data-v-60b53eb4] {
+  width: 100%;
+  height: 100%;
+  border: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+.cursor-crosshair[data-v-60b53eb4] {
+  cursor: crosshair;
+}
+.rect[data-v-60b53eb4] {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  outline: 1px solid #39f;
+  outline-color: rgba(51, 153, 255, .75);
+  position: absolute;
+}
+.anchor[data-v-60b53eb4] {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  margin-left: -4px;
+  background-color: #39f;
+  border-radius: 50%;
+  opacity: 0.75;
+  border: none;
+}
+.unselect[data-v-60b53eb4] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /* 以下两个属性目前并未支持，写在这里为了减少风险 */
+  -o-user-select: none;
+  user-select: none;
+}
+.bg-rect[data-v-60b53eb4] {
+  position: absolute;
+  background-color: black;
+  opacity: 0.3;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/*# sourceMappingURL=vue-crop-simple.css.map*/
